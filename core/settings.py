@@ -1,4 +1,6 @@
 import os
+from typing import List
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -14,7 +16,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "I-AM-INSECURE")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: List[str] = [
+    "localhost",
+]
 
 
 # Application definition
@@ -147,3 +151,9 @@ LOGGING = {
         "": {"handlers": ["console"], "level": "INFO"},
     },
 }
+
+# CORS Origins
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
