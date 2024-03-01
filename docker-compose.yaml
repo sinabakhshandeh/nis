@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+
+  gunicorn:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: "no"
+    ports:
+      - 8000:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:14.4-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "nerd"]
+      interval: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

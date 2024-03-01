@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  gunicorn:
+    container_name: gunicorn
+    volumes:
+      # hot dev
+      - .:/opt/app
+    restart: "no"
+    ports:
+      - 8000:8000
+    entrypoint: python manage.py runserver 0.0.0.0:8000
+    environment:
+      - POSTGRES_DB=nerd
+      - POSTGRES_USER=nerd
+      - POSTGRES_PASSWORD=nerd
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - DEBUG=True
+  postgres:
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=nerd
+      - POSTGRES_USER=nerd
+      - POSTGRES_PASSWORD=nerd
