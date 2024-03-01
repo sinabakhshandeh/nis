@@ -1,0 +1,23 @@
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 79
+
+[tool.flake8]
+extend-ignore = ["E203", "E266", "E501", "W503", "F403", "F401"]
+max-line-length = 79
+max-complexity = 18
+select = ["B","C","E","F","W","T4","B9"]
+exclude = []
+
+[tool.mypy]
+python_version = "3.10"
+files = ["core", "apps"]
+ignore_missing_imports = false
+plugins = [ "mypy_django_plugin.main" ]
+# will show the type of errors
+show_error_codes = true
+
+[tool.django-stubs]
+django_settings_module = "core.settings"
