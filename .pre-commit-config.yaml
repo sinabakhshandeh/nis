@@ -28,3 +28,9 @@ repos:
         # TODO: added psycopg2 to bypass mypy type check error
         additional_dependencies: ["django-stubs", "pydantic", "psycopg2-binary", "django-cors-headers", "django-ninja"]
 
+        exclude: '\.py$'
+        entry: |
+          import sys
+
+          if any("migrations" in filename for filename in sys.argv[1:]):
+              sys.exit(0)

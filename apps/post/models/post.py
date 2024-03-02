@@ -1,11 +1,9 @@
 from django.db import models
 
-from apps.user.models import User
-
 
 class Post(models.Model):
     user = models.ForeignKey(
-        User,
+        "User",
         on_delete=models.CASCADE,
         related_name="posts",
         verbose_name="User",
