@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     # Apps
     "apps.user",
     "apps.post",
+    "apps.log",
 ]
 
 MIDDLEWARE = [
