@@ -45,10 +45,10 @@ async def login(request, user_data: schemas.UserLoginSchema):
 @router.get(
     "/users/profile/{username}/",
     response={200: schemas.ProfileSchema, 401: schemas.ErrorSchema},
-    auth=None,
 )
 def user_profile(request, username: str):
-    user = services.user_profile(username=username)
+    user_sub = request.auth["sub"]
+    user = services.user_profile(username=username, user_sub=user_sub)
     return user
 
 

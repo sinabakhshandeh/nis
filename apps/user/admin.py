@@ -13,13 +13,17 @@ class CustomUserAdmin(UserAdmin):
         "email",
         "first_name",
         "last_name",
+        "username",
         "is_staff",
         "is_superuser",
     )
     readonly_fields = ("uuid",)
     fieldsets = (  # type: ignore
         (None, {"fields": ("email", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "uuid")}),
+        (
+            _("Personal info"),
+            {"fields": ("first_name", "last_name", "username", "uuid")},
+        ),
         (
             _("Permissions"),
             {

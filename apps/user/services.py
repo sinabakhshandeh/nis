@@ -8,6 +8,7 @@ from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from ninja.errors import HttpError
 
+from apps.log.models import ProfileViewLog
 from apps.user.jwt_handler import JWTToken
 from apps.user.models import User
 
@@ -85,8 +86,13 @@ def update_user(*, current_user: UUID, sub: UUID, data: dict) -> User:
     return user_obj
 
 
-def user_profile(username: str) -> User:
+def user_profile(username: str, user_sub: UUID) -> User:
     user = User.objects.filter(username=username)
+    viewer = User.objects.filter(uuid=user_sub).first()
     if not user.exists():
         raise HttpError(404, "Not Found: No User matches the given query.")
+    ProfileViewLog.objects.create(
+        viewer=viewer,
+        viewed_profile=user.first(),
+    )
     return user
