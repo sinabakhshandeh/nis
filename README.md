@@ -1,4 +1,4 @@
-# Nerdstudio Backend
+# Instagram Backend
 1. [API Docs](http://localhost:8000/v1/api/docs)
 
 # Start developement
