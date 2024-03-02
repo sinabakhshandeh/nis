@@ -29,3 +29,13 @@ router = Router()
 async def register(request, user_data: schemas.UserRegistrationSChema):
     tokens = await services.sign_up(user_data=user_data.dict())
     return tokens
+
+
+@router.post(
+    "/login/",
+    response={200: schemas.LoginResponseSchema, 401: schemas.ErrorSchema},
+    auth=None,
+)
+async def login(request, user_data: schemas.UserLoginSchema):
+    token = await services.login(user_data=user_data.dict())
+    return token

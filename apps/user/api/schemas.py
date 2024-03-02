@@ -22,3 +22,15 @@ class RefreshTokenSchema(Schema):
 
 class RegisterResponseSchema(RefreshTokenSchema):
     access_token: str
+
+
+class EmailSchema(Schema):
+    email: EmailStr
+
+
+class UserLoginSchema(EmailSchema):
+    password: str
+
+
+class LoginResponseSchema(RefreshTokenSchema):
+    access_token: str

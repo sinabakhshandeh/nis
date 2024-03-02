@@ -2,6 +2,7 @@ import logging
 from typing import Dict, cast
 
 from asgiref.sync import sync_to_async
+from django.contrib.auth import authenticate
 from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from ninja.errors import HttpError
@@ -33,4 +34,24 @@ async def sign_up(user_data: Dict[str, str]) -> Dict[str, str]:
 
     user = cast(User, user)
     user = await User.objects.login(user)
+    return tokens
+
+
+async def login(*, user_data: Dict[str, str]) -> Dict[str, str]:
+    email = user_data["email"]
+    password = user_data["password"]
+    user = await sync_to_async(authenticate, thread_sensitive=True)(
+        email=email, password=password
+    )
+    user = cast(User, user)
+    if user is None:
+        raise HttpError(401, "Password is not correct or user not exists.")
+
+    payload = {
+        "name": f"{user.first_name} {user.last_name}",
+        "admin": user.is_superuser,
+    }
+    jwt_token = JWTToken()
+    tokens = jwt_token.issue_tokens(sub=str(user.uuid), data=payload)
+    user = await User.objects.login(cast(User, user))
     return tokens
