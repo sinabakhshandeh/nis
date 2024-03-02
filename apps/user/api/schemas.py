@@ -64,3 +64,7 @@ class ProfileSchema(ModelSchema):
 
 class UserSchema(ProfileSchema):
     email: EmailStr
+
+
+class ApproveSchema(Schema):
+    is_approved: bool

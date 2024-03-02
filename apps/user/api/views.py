@@ -43,13 +43,23 @@ async def login(request, user_data: schemas.UserLoginSchema):
 
 
 @router.get(
-    "/users/profile/{username}/",
+    "/profile/{username}/",
     response={200: schemas.ProfileSchema, 401: schemas.ErrorSchema},
 )
 def user_profile(request, username: str):
     user_sub = request.auth["sub"]
     user = services.user_profile(username=username, user_sub=user_sub)
     return user
+
+
+@router.get(
+    "/follow/{username}/",
+    response={200: schemas.ApproveSchema, 401: schemas.ErrorSchema},
+)
+def follow(request, username: str):
+    user_sub = request.auth["sub"]
+    approve = services.follow(username=username, user_sub=user_sub)
+    return approve
 
 
 @router.patch(

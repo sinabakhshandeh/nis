@@ -10,7 +10,7 @@ from ninja.errors import HttpError
 
 from apps.log.models import ProfileViewLog
 from apps.user.jwt_handler import JWTToken
-from apps.user.models import User
+from apps.user.models import Follow, User
 
 logger = logging.getLogger(__name__)
 
@@ -96,3 +96,18 @@ def user_profile(username: str, user_sub: UUID) -> User:
         viewed_profile=user.first(),
     )
     return user
+
+
+def follow(username: str, user_sub: UUID) -> User:
+    users = User.objects.filter(username=username)
+    follower = User.objects.filter(uuid=user_sub).first()
+    if not users.exists():
+        raise HttpError(404, "Not Found: No User matches the given query.")
+    user = users.first()
+    if user.uuid == follower.uuid:
+        raise HttpError(403, "You do not have permission to follow yourself")
+    Follow.objects.create(
+        follower=follower,
+        followed_user=user,
+    )
+    return {"is_approved": True}
