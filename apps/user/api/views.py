@@ -10,7 +10,8 @@ from . import schemas
 
 logger = logging.getLogger(__name__)
 
-router = Router()
+auth_router = Router()
+profile_router = Router()
 
 
 # @router.post(
@@ -22,7 +23,7 @@ router = Router()
 #     return sample
 
 
-@router.post(
+@auth_router.post(
     "/register/",
     response={200: schemas.RegisterResponseSchema, 401: schemas.ErrorSchema},
     auth=None,
@@ -32,7 +33,7 @@ async def register(request, user_data: schemas.UserRegistrationSChema):
     return tokens
 
 
-@router.post(
+@auth_router.post(
     "/login/",
     response={200: schemas.LoginResponseSchema, 401: schemas.ErrorSchema},
     auth=None,
@@ -42,8 +43,21 @@ async def login(request, user_data: schemas.UserLoginSchema):
     return token
 
 
-@router.get(
-    "/profile/{username}/",
+@auth_router.patch(
+    "/users/{id}/",
+    response={200: schemas.UserSchema, 401: schemas.ErrorSchema},
+    auth=None,
+)
+def update_user(request, id: UUID, user_data: schemas.UpdateSchema):
+    user_sub = request.auth["sub"]
+    user = services.update_user(
+        sub=user_sub, current_user=id, data=user_data.dict(exclude_none=True)
+    )
+    return user
+
+
+@profile_router.get(
+    "/{username}/",
     response={200: schemas.ProfileSchema, 401: schemas.ErrorSchema},
 )
 def user_profile(request, username: str):
@@ -52,7 +66,7 @@ def user_profile(request, username: str):
     return user
 
 
-@router.get(
+@profile_router.get(
     "/follow/{username}/",
     response={200: schemas.ApproveSchema, 401: schemas.ErrorSchema},
 )
@@ -66,7 +80,7 @@ def follow(request, username: str):
     return approve
 
 
-@router.get(
+@profile_router.get(
     "/unfollow/{username}/",
     response={200: schemas.ApproveSchema, 401: schemas.ErrorSchema},
 )
@@ -74,16 +88,3 @@ def unfollow(request, username: str):
     user_sub = request.auth["sub"]
     approve = services.follow_up(username=username, user_sub=user_sub)
     return approve
-
-
-@router.patch(
-    "/users/{id}/",
-    response={200: schemas.UserSchema, 401: schemas.ErrorSchema},
-    auth=None,
-)
-def update_user(request, id: UUID, user_data: schemas.UpdateSchema):
-    user_sub = request.auth["sub"]
-    user = services.update_user(
-        sub=user_sub, current_user=id, data=user_data.dict(exclude_none=True)
-    )
-    return user
