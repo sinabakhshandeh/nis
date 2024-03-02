@@ -47,3 +47,13 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
+
+class FollowAdmin(admin.ModelAdmin):
+    list_display = ("follower", "followed_user", "created_at")
+    list_filter = ("follower", "followed_user")
+    search_fields = ("follower__username", "followed_user__username")
+    date_hierarchy = "created_at"
+
+
+admin.site.register(models.Follow, FollowAdmin)
