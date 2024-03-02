@@ -58,7 +58,21 @@ def user_profile(request, username: str):
 )
 def follow(request, username: str):
     user_sub = request.auth["sub"]
-    approve = services.follow(username=username, user_sub=user_sub)
+    approve = services.follow_up(
+        username=username,
+        user_sub=user_sub,
+        follow=True,
+    )
+    return approve
+
+
+@router.get(
+    "/unfollow/{username}/",
+    response={200: schemas.ApproveSchema, 401: schemas.ErrorSchema},
+)
+def unfollow(request, username: str):
+    user_sub = request.auth["sub"]
+    approve = services.follow_up(username=username, user_sub=user_sub)
     return approve
 
 

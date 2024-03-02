@@ -98,16 +98,35 @@ def user_profile(username: str, user_sub: UUID) -> User:
     return user
 
 
-def follow(username: str, user_sub: UUID) -> User:
+def follow_up(username: str, user_sub: UUID, follow=False) -> User:
     users = User.objects.filter(username=username)
     follower = User.objects.filter(uuid=user_sub).first()
     if not users.exists():
         raise HttpError(404, "Not Found: No User matches the given query.")
     user = users.first()
     if user.uuid == follower.uuid:
-        raise HttpError(403, "You do not have permission to follow yourself")
-    Follow.objects.create(
+        raise HttpError(400, "You do not have permission to follow yourself")
+
+    follows = Follow.objects.filter(
         follower=follower,
         followed_user=user,
     )
+
+    if follow:
+        if not follows.exists():
+            Follow.objects.create(
+                follower=follower,
+                followed_user=user,
+            )
+        else:
+            raise HttpError(400, "You followed this user before!")
+
+    else:
+        if follows.exists():
+            Follow.objects.get(
+                follower=follower,
+                followed_user=user,
+            ).delete()
+        else:
+            raise HttpError(400, "You did not follow this user before!")
     return {"is_approved": True}
