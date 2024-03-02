@@ -2,9 +2,10 @@ import os
 from pathlib import Path
 from typing import List
 
+from core.constants import PRIVATE_KEY_DEV, PUBLIC_KEY_DEV
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -156,3 +157,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
+
+# JWY keys
+PRIVATE_KEY = os.getenv("PRIVATE_KEY", PRIVATE_KEY_DEV)
+PUBLIC_KEY = os.getenv("PUBLIC_KEY", PUBLIC_KEY_DEV)
