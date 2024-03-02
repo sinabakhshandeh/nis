@@ -83,3 +83,10 @@ def update_user(*, current_user: UUID, sub: UUID, data: dict) -> User:
 
     user_obj.refresh_from_db()
     return user_obj
+
+
+def user_profile(username: str) -> User:
+    user = User.objects.filter(username=username)
+    if not user.exists():
+        raise HttpError(404, "Not Found: No User matches the given query.")
+    return user

@@ -42,9 +42,20 @@ async def login(request, user_data: schemas.UserLoginSchema):
     return token
 
 
+@router.get(
+    "/users/profile/{username}/",
+    response={200: schemas.ProfileSchema, 401: schemas.ErrorSchema},
+    auth=None,
+)
+def user_profile(request, username: str):
+    user = services.user_profile(username=username)
+    return user
+
+
 @router.patch(
     "/users/{id}/",
     response={200: schemas.UserSchema, 401: schemas.ErrorSchema},
+    auth=None,
 )
 def update_user(request, id: UUID, user_data: schemas.UpdateSchema):
     user_sub = request.auth["sub"]

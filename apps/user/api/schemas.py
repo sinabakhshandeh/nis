@@ -50,9 +50,7 @@ class UpdateSchema(Schema):
     uuid: Optional[UUID]
 
 
-class UserSchema(ModelSchema):
-    email: EmailStr
-
+class ProfileSchema(ModelSchema):
     class Config:
         model = User
         model_fields = [
@@ -62,3 +60,7 @@ class UserSchema(ModelSchema):
             "description",
             "phone_number",
         ]
+
+
+class UserSchema(ProfileSchema):
+    email: EmailStr
