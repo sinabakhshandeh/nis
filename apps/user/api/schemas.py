@@ -1,5 +1,10 @@
-from ninja import Schema
+from typing import Optional
+from uuid import UUID
+
+from ninja import ModelSchema, Schema
 from pydantic import EmailStr
+
+from apps.user.models import User
 
 
 class ErrorSchema(Schema):
@@ -34,3 +39,26 @@ class UserLoginSchema(EmailSchema):
 
 class LoginResponseSchema(RefreshTokenSchema):
     access_token: str
+
+
+class UpdateSchema(Schema):
+    description: Optional[str]
+    password: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    phone_number: Optional[str]
+    uuid: Optional[UUID]
+
+
+class UserSchema(ModelSchema):
+    email: EmailStr
+
+    class Config:
+        model = User
+        model_fields = [
+            "first_name",
+            "last_name",
+            "date_joined",
+            "description",
+            "phone_number",
+        ]

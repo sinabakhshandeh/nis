@@ -1,5 +1,6 @@
 import logging
 from typing import Dict, cast
+from uuid import UUID
 
 from asgiref.sync import sync_to_async
 from django.contrib.auth import authenticate
@@ -27,7 +28,7 @@ async def sign_up(user_data: Dict[str, str]) -> Dict[str, str]:
 
     payload = {
         "name": f"{user.first_name} {user.last_name}",
-        "username": user.username,
+        "admin  ": user.is_superuser,
     }
     jwt_token = JWTToken()
     tokens = jwt_token.issue_tokens(sub=str(user.uuid), data=payload)
@@ -55,3 +56,30 @@ async def login(*, user_data: Dict[str, str]) -> Dict[str, str]:
     tokens = jwt_token.issue_tokens(sub=str(user.uuid), data=payload)
     user = await User.objects.login(cast(User, user))
     return tokens
+
+
+def update_user(*, current_user: UUID, sub: UUID, data: dict) -> User:
+    if str(current_user) != str(sub):
+        raise HttpError(403, "You don't have enough permissions for this API")
+
+    user = User.objects.filter(uuid=sub)
+    if not user.exists():
+        raise HttpError(404, "Not Found: No User matches the given query.")
+
+    password = data.get("password")
+    if password:
+        password = data.pop("password")
+
+    try:
+        user.update(**data)
+    except IntegrityError as e:
+        logger.exception(e)
+        raise HttpError(400, "User already exists")
+
+    user_obj = user[0]
+    if password:
+        user_obj.set_password(password)
+        user_obj.save()
+
+    user_obj.refresh_from_db()
+    return user_obj

@@ -1,4 +1,5 @@
 import logging
+from uuid import UUID
 
 from django.utils.translation import gettext_lazy as _
 from ninja import Router
@@ -39,3 +40,15 @@ async def register(request, user_data: schemas.UserRegistrationSChema):
 async def login(request, user_data: schemas.UserLoginSchema):
     token = await services.login(user_data=user_data.dict())
     return token
+
+
+@router.patch(
+    "/users/{id}/",
+    response={200: schemas.UserSchema, 401: schemas.ErrorSchema},
+)
+def update_user(request, id: UUID, user_data: schemas.UpdateSchema):
+    user_sub = request.auth["sub"]
+    user = services.update_user(
+        sub=user_sub, current_user=id, data=user_data.dict(exclude_none=True)
+    )
+    return user
