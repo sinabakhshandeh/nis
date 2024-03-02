@@ -54,6 +54,8 @@ class ProfileSchema(ModelSchema):
     class Config:
         model = User
         model_fields = [
+            "id",
+            "username",
             "first_name",
             "last_name",
             "date_joined",
