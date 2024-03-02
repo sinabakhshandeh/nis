@@ -24,3 +24,10 @@ services:
       - POSTGRES_DB=nerd
       - POSTGRES_USER=nerd
       - POSTGRES_PASSWORD=nerd
+  
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db

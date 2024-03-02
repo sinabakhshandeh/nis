@@ -21,6 +21,14 @@ services:
       test: ["CMD", "pg_isready", "-U", "nerd"]
       interval: 5s
       retries: 5
+  
+  mongodb:
+    image: bitnami/mongodb:7.0.6
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
 
 volumes:
   postgres_data:
+  mongodb_data:
